@@ -20,10 +20,9 @@ Many young professionals know that co-housing can help — but finding the **rig
 **Roost** is a roommate-matching platform that reframes co-housing as a **financial strategy**, not just a social one.
 
 Solution to the problem:
-- Shows real, local cost breakdowns gathered from the Craiglist API for house/rent and the CMHC 2025 Rental Market Report for Victoria
+- Shows cost breakdowns for house/rent based on the CMHC 2025 Rental Market Report for Victoria
 - Quantifies monthly savings in a detailed way (ex: shows how much you would save monthly with this roommate accounting for generally hidden costs such as commuting and utilities)
 - Demonstrates how co-housing accelerates progress toward ownership
-- 
 ---
 
 ## 🛠️ How It Works
@@ -43,7 +42,6 @@ Solution to the problem:
 
 ## 🧱 Tech Stack
 
-- **next.js**
+- **Django**
 - **FastAPI**
 - **Python**
-- **FastAPI**
