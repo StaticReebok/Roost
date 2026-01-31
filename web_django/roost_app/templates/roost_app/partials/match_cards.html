@@ -1,0 +1,41 @@
+{% if profile_id %}
+  {% if cards %}
+    {% for card in cards %}
+    <div class="match-card card flex flex-col sm:flex-row gap-5 mt-6">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start gap-4">
+          <div class="score-ring flex-shrink-0">{{ card.ladder_benefit_score|floatformat:0 }}</div>
+          <div class="min-w-0">
+            <h3 class="font-display font-semibold text-slate-900 text-lg">{{ card.profile.display_name|default:"Roommate" }}</h3>
+            <p class="mt-1 text-sm text-slate-600"><strong>Rent split:</strong> ${{ card.rent_split_min|floatformat:0 }}–${{ card.rent_split_max|floatformat:0 }}/mo</p>
+            <p class="mt-0.5 text-sm text-slate-600"><strong>Est. time saved:</strong> <span class="badge badge-accent">{{ card.months_saved|floatformat:0 }} mo</span> toward down payment vs. solo</p>
+            <div class="mt-2 flex flex-wrap gap-1.5">{% for c in card.compatibility_chips %}<span class="badge badge-primary">{{ c }}</span>{% endfor %}</div>
+            {% if card.why_this_match %}<details class="mt-3"><summary class="cursor-pointer text-sm font-medium text-slate-600">Why this match?</summary><ul class="mt-1 text-sm text-slate-600 list-disc pl-4 space-y-0.5">{% for w in card.why_this_match %}<li>{{ w }}</li>{% endfor %}</ul></details>{% endif %}
+            {% if card.is_mutual_match %}<p class="mt-3 text-sm font-medium text-green-700">✓ Match — Email: {{ card.profile.contact_email|default:"—" }} · Phone: {{ card.profile.contact_phone|default:"—" }}</p>{% else %}<p class="mt-3 text-sm text-slate-500">Contact revealed after mutual match</p>{% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="flex sm:flex-col gap-2 shrink-0 items-center sm:items-end">
+        <form method="post" action="{% url 'swipe' %}" class="inline" data-action="like" hx-post="{% url 'swipe' %}" hx-target="#matches-container" hx-swap="innerHTML">
+          {% csrf_token %}
+          <input type="hidden" name="viewer_profile_id" value="{{ profile_id }}" />
+          <input type="hidden" name="target_profile_id" value="{{ card.profile.id }}" />
+          <input type="hidden" name="action" value="like" />
+          <button type="submit" class="w-12 h-12 rounded-full bg-roost-100 text-roost-700 font-semibold hover:bg-roost-200 transition text-lg" title="Like (swipe right)">♥</button>
+        </form>
+        <form method="post" action="{% url 'swipe' %}" class="inline" data-action="pass" hx-post="{% url 'swipe' %}" hx-target="#matches-container" hx-swap="innerHTML">
+          {% csrf_token %}
+          <input type="hidden" name="viewer_profile_id" value="{{ profile_id }}" />
+          <input type="hidden" name="target_profile_id" value="{{ card.profile.id }}" />
+          <input type="hidden" name="action" value="pass" />
+          <button type="submit" class="w-12 h-12 rounded-full bg-red-50 text-red-600 font-semibold hover:bg-red-100 transition text-lg" title="Pass (swipe left)">✕</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="mt-10 p-8 rounded-2xl bg-slate-100 text-center text-slate-600 border border-dashed border-slate-300">No more cards right now. Create a profile in <a href="{% url 'onboarding' %}" class="text-roost-600 hover:underline">Onboarding</a> to get personalized matches.</div>
+  {% endif %}
+{% else %}
+<div class="mt-10 p-8 rounded-2xl bg-slate-100 text-center text-slate-600 border border-dashed border-slate-300">Create a profile in <a href="{% url 'onboarding' %}" class="text-roost-600 hover:underline">Onboarding</a> to see your matches.</div>
+{% endif %}

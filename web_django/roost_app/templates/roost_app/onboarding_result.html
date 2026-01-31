@@ -1,0 +1,24 @@
+{% extends 'roost_app/base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <div class="card mt-8 space-y-6">
+    <div class="flex items-center gap-3">
+      <div class="score-ring">✓</div>
+      <div>
+        <p class="font-semibold text-green-700">Profile created</p>
+        <p class="text-sm text-slate-600">Your profile ID: <strong>{{ profile.id }}</strong></p>
+      </div>
+    </div>
+    <h3 class="font-display font-semibold text-slate-900 text-lg">Ladder Snapshot</h3>
+    <p class="text-slate-700">Years to down payment (solo): <strong class="text-roost-700">{{ snap.years_solo|floatformat:1 }} years</strong></p>
+    {% if snap.improvement_range_months %}
+    <p class="text-slate-700">If you share with 1–2 roommates, your timeline could improve by <strong class="text-accent-600">{{ snap.improvement_range_months.0|floatformat:0 }}–{{ snap.improvement_range_months.1|floatformat:0 }} months</strong>.</p>
+    {% endif %}
+    <details class="text-sm text-slate-600">
+      <summary class="cursor-pointer font-medium">Assumptions</summary>
+      <ul class="mt-2 p-4 bg-slate-50 rounded-xl space-y-1 list-none">{% for k, v in snap.assumptions.items %}<li><strong>{{ k }}:</strong> {{ v }}</li>{% endfor %}</ul>
+    </details>
+  </div>
+  <p class="mt-6 text-slate-600">Next: <a href="{% url 'matches' %}" class="text-roost-600 font-medium hover:underline">Browse matches</a> to see roommates ranked by Ladder Benefit Score.</p>
+</div>
+{% endblock %}

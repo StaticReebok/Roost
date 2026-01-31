@@ -1,0 +1,11 @@
+<div class="card grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div><p class="text-sm text-slate-600">All-in monthly cost (solo)</p><p class="text-xl font-display font-bold text-slate-900">${{ all_in_monthly_cost_solo|floatformat:0 }}</p></div>
+  <div><p class="text-sm text-slate-600">Commute cost (approx./mo)</p><p class="text-xl font-display font-bold text-slate-900">${{ commute_cost_per_month|floatformat:0 }}</p></div>
+  <div><p class="text-sm text-slate-600">Victoria avg 2-bed rent</p><p class="text-xl font-display font-bold text-slate-900">${{ victoria_avg_2bed_rent|floatformat:0 }}</p></div>
+  <div><p class="text-sm text-slate-600">Income needed to qualify (typical)</p><p class="text-xl font-display font-bold text-slate-900">${{ income_needed_to_qualify_typical|floatformat:0 }}</p></div>
+</div>
+<p class="text-sm text-slate-600">{{ note_city_vs_greater_victoria }}</p>
+<details class="card">
+  <summary class="cursor-pointer font-semibold text-slate-800">Assumptions &amp; sources</summary>
+  <p class="mt-4 text-sm text-slate-600">Rent and income benchmarks use CMHC and local Victoria data. Down payment example: 10% on $750k. City of Victoria vs Greater Victoria (Saanich, Oak Bay, etc.) may differ.</p>
+</details>

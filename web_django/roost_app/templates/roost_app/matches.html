@@ -1,0 +1,55 @@
+{% extends 'roost_app/base.html' %}
+{% block content %}
+<p class="section-label">Find roommates</p>
+<h2 class="section-title mt-1 text-slate-900">Browse matches</h2>
+<p class="section-desc">Roommates ranked by Ladder Benefit Score — swipe right to like, left to pass. Mutual like reveals contact.</p>
+<div id="matches-container" class="mt-10 space-y-6 match-stack" hx-get="{% url 'matches_partial' %}?profile_id={{ profile_id }}" hx-trigger="load" hx-swap="innerHTML">
+  <div class="flex justify-center py-12"><span class="text-slate-500">Loading matches…</span></div>
+</div>
+<div class="mt-6 text-center text-sm text-slate-500">Create a profile in <a href="{% url 'onboarding' %}" class="text-roost-600 hover:underline">Onboarding</a> to get personalized matches.</div>
+<style>
+  .match-stack .match-card { touch-action: pan-y; user-select: none; transition: transform 0.2s ease-out; }
+  .match-stack .match-card.swiping-right { transform: translateX(120%) rotate(12deg); opacity: 0.7; }
+  .match-stack .match-card.swiping-left { transform: translateX(-120%) rotate(-12deg); opacity: 0.7; }
+  .match-stack .match-card.removing { transform: scale(0.8); opacity: 0; transition: transform 0.25s ease-out, opacity 0.2s; pointer-events: none; }
+</style>
+<script>
+(function() {
+  document.body.addEventListener('htmx:afterSwap', function(ev) {
+    if (ev.detail.target.id !== 'matches-container') return;
+    var container = document.getElementById('matches-container');
+    if (!container) return;
+    container.querySelectorAll('.match-card').forEach(function(card) {
+      var likeForm = card.querySelector('form[data-action="like"]');
+      var passForm = card.querySelector('form[data-action="pass"]');
+      if (!likeForm || !passForm) return;
+      var startX = 0, currentX = 0;
+      function updateClass(dir) {
+        card.classList.remove('swiping-left', 'swiping-right');
+        if (dir > 15) card.classList.add('swiping-right');
+        else if (dir < -15) card.classList.add('swiping-left');
+      }
+      function handleEnd() {
+        card.classList.remove('swiping-left', 'swiping-right');
+        if (currentX > 80) { card.classList.add('removing'); likeForm.querySelector('button[type="submit"]').click(); }
+        else if (currentX < -80) { card.classList.add('removing'); passForm.querySelector('button[type="submit"]').click(); }
+      }
+      card.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; });
+      card.addEventListener('touchmove', function(e) {
+        currentX = e.touches[0].clientX - startX;
+        updateClass(currentX);
+      });
+      card.addEventListener('touchend', handleEnd);
+      card.addEventListener('mousedown', function(e) {
+        if (e.button !== 0) return;
+        startX = e.clientX;
+        function move(e) { currentX = e.clientX - startX; updateClass(currentX); }
+        function up() { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); handleEnd(); }
+        document.addEventListener('mousemove', move);
+        document.addEventListener('mouseup', up);
+      });
+    });
+  });
+})();
+</script>
+{% endblock %}
